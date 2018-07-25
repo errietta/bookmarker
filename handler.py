@@ -1,5 +1,5 @@
 import json
-
+from pprint import pprint
 
 def hello(event, context):
     body = {
@@ -13,3 +13,11 @@ def hello(event, context):
     }
 
     return response
+
+def addUrl(event, context):
+    pprint(event)
+
+    return {
+        "statusCode": 200,
+        "body": json.dumps(event)
+    }

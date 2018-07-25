@@ -16,6 +16,8 @@ var/
 .installed.cfg
 *.egg
 
+__pycache__
+
 # Serverless directories
 .serverless
 .vscode

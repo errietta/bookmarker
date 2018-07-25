@@ -61,6 +61,14 @@ functions:
           path: hello
           method: get
 
+  addUrl:
+    handler: handler.addUrl
+
+    events:
+      - http:
+          path: addUrl
+          method: post
+
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)
 #      - sns: greeter-topic
