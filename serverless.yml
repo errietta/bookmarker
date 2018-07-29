@@ -17,11 +17,28 @@ service: bookmarker
 # Check out our docs for more details
 # frameworkVersion: "=X.X.X"
 
+plugins:
+  - serverless-reqvalidator-plugin
+  - serverless-aws-documentation
+
 provider:
   name: aws
   runtime: python3.6
-  stage: dev
+  stage: ${opt:stage, 'dev'}
   region: eu-west-2
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
 
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
@@ -52,6 +69,20 @@ provider:
 #    - exclude-me.py
 #    - exclude-me-dir/**
 
+custom:
+  documentation:
+    api:
+      info:
+        version: '0.0.1'
+        title: Bookmarker
+        description: Bookmarker
+    models:
+      -
+        name: BookmarkCreateRequest
+        description: "Model for the Creation Request"
+        contentType: "application/json"
+        schema: ${file(models/BookmarkCreate.json)}
+
 functions:
   hello:
     handler: handler.hello
@@ -68,6 +99,40 @@ functions:
       - http:
           path: addUrl
           method: post
+          reqValidatorName: 'bodyValidator'
+          documentation:
+            summary: Create a bookmark
+            requestModels:
+              "application/json": "BookmarkCreateRequest"
+
+resources:
+  Resources:
+    bodyValidator:
+      Type: "AWS::ApiGateway::RequestValidator"
+      Properties:
+        Name: 'body-validator'
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        ValidateRequestBody: true
+        ValidateRequestParameters: false
+
+    BookmarksDDBTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: "UserId"
+            AttributeType: "S"
+        KeySchema:
+          -
+            AttributeName: "UserId"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+
 
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)
