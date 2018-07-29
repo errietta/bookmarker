@@ -1,0 +1,24 @@
+{
+  "name": "bookmarker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/errietta/bookmarker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/errietta/bookmarker/issues"
+  },
+  "homepage": "https://github.com/errietta/bookmarker#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "serverless-aws-documentation": "^1.1.0",
+    "serverless-reqvalidator-plugin": "^1.0.2"
+  }
+}
