@@ -21,9 +21,9 @@ def createBookmark(userId, args):
     Key={
       'UserId': userId,
     },
-    UpdateExpression="set bookmarks = :b",
+    UpdateExpression="set bookmarks = :bmarks",
     ExpressionAttributeValues={
-      ':b': [args]
+      ':bmarks': [args]
     },
     ReturnValues="UPDATED_NEW"
   )
