@@ -21,3 +21,5 @@ __pycache__
 # Serverless directories
 .serverless
 .vscode
+
+node_modules
